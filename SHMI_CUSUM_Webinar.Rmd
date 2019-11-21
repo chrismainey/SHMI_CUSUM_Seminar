@@ -1,0 +1,223 @@
+---
+title: "Changes to HED SHMI and CUSUM"
+author: "Chris Mainey chris.mainey@uhb.nhs.uk"
+date: "2019/09/02 (updated: `r Sys.Date()`)"
+output:
+  xaringan::moon_reader:
+    chakra: "libs/remark-latest.min.js"
+    css: "libs/HED.css"
+    lib_dir: libs
+    seal: false
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+
+---
+class: center
+
+
+```{r setup, echo=FALSE, message=FALSE, warning=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+  comment = "#>",
+  collapse = TRUE,
+  fig.align = "center"
+)
+library(Cairo)
+library(extrafont)
+```
+
+
+
+<br><br><br><br><br>
+
+## Changes to HED SHMI and CUSUM modules
+
+<br><br>
+
+
+__Chris Mainey__
+<p style="font-size:26;")>Intelligence Analyst<br>
+<b>University Hospitals Birmingham 
+NHS Foundation Trust</b></p>
+<br>
+<span style="font-size:26;">[HED@uhb.nhs.uk](mailto:HED@uhb.nhs.uk)</span><br>
+
+---
+
+# Overview
+
++ Standardised Mortality Ratios
++ SHMI
+ + NHS Digital's Changes
+ + HED module Changes
+ + Outstanding Methodological Issues
++ SHMI Q&A
++ CUSUM overview
+ + Different CUSUM methods
+ + New HED CUSUM module
++ CUSUM Q&A
+
+<br><br>
+
+___For questions, please type them into the chat box, and we will address them at Q&A___
+
+---
+
+## Standardised Mortlaty Ratios (SMRs)
+
++ Difference in case-mix between hospitals hinder mortality comparisons
+ 
+ + Patient population / demographics
+ + Referral patterns / service provision
+
+--
+
++ Indirectly-standardised, using regression models
+ + Individual Probability of death calculated
+$$SMR = \frac{\Sigma{(\text{Number of Observed deaths})}}{\Sigma{(\text{Predicted Probability of death})}}$$
+
+--
+
+### Common SMRs:
+
++ __SHMI:__ Summary Hospital-level Mortality Indicator, NHS official indicaotr for death in hospitals of within 30-days
++ __HSMR__: Hospital Standardised Mortlaity Ratio, Dr Foster-based indicator of ~80% in-hospital deaths
+
+---
+
+# SHMI development
+
+___Number of criticisms remain:___
++ Model quality was poor in certain groups
++ No deprivation, ethnicity, or palliative information
++ Apparent South-East bias
++ Distinct seasonal patterns
++ Out-of-date
++ Inconsistent across large / intergrated providers
+
+--
+
+___NHS Digital Changes:___
++ Regrouped: hodgkins/non-hidgkins lymphoma, birth and obs/meternity.
++ Added Birth-weight predictor to neonatal groups
++ Seasonality now included as admission month
++ Publication now monthly(mostly...)
++ Site-level now published*
+
+---
+
+# Site-level SHMI
+
+Many of you may have filled in an NHS Digital servey about site in recent weeks.
+Site is inconsistently recorded, coded and submitted to HES.
+
+<br><br>
+
+__NHSD techniques developed:__
++ Using CQC registered sites/providers
++ Merging with ODS data and HES
++ USing their own remapping
++ Manual correction likely in subsequent publications
+
+--
+
+<br><br>
+__HED using look-up tables supplied by NHSD, and applying remapping to SITETRET.__
+
+
+---
+
+# HED module changes
+
++ Renaming (from this month)
+
+--
+
++ All model parameters now provided:
+ 
+ + NHSD added more predicotrs, but not in co-ordination with DARS team
+ + NHSD did not provide other predictors to subscribers
+ + Fit SHMI from NHSD coefficients, calcualte in/out hospital and palliative models
+
+--
+
++ 'Monthly' SHMI
+
+ + Subject to Type-2 opt-outs, but has patient details
+ + Fitted using correct model from NHS, but numbers may differ
+ + HES sites not mapped like SHMI, manual remapping
+
+---
+
+# Module changes
+
+.pull-left[
+![](./man/figures/SHMI_button.png)
+]
+
+.pull-right[
+<br>
++ In portal , little has changed for user, mostly in underlying system
+<br>
++ Additional drop-down menu on Funnel Plot (Random Effects Model)
+<br>
++ Adjusts aggreagation level and recalculates 
+<br>
++ Censoring and Overdispersion issues in NHSD method
+
+]
+
+---
+# Outstandaing Issues
+
+### Site-level mapping
+
++ This is inconsistent and inaccessible for other organisations.  
++ In our view, it is not fit for analysis, but we have provided it as NHSD have.
+
+### Overdispersion 
+
+Overdispersion (more variation than we expect in our data from theory alone) is present in SHMI.  It is adjusted for in the random-effects funnel plot by inflating the limits by the overdispersion factor.
++ OD is usually worse in smaller unit
++ Site and diangostic grouping increase OD
++ NHS censor before calcualting OD, underestimating it
++ HED applies before censoring, and we have submitted this to NHSD
+---
+
+# Summary
+
+SHMI has moved to monthly publication, with improved division of diagnsotic groups and additions of birth-weight and seasonality predictors.  This has improved the quality of SHMI.
+
+Reporting at site and dignaostics group level is not yet sound due to combination of censoring and overdispersion adjustments.
+
+HED is reporting data as provided by NHS Digital, using their methods and site-lookup tables. We regularly are im regular contact with NHSD about SHMI developments and will keep up with any changes.
+
+The only noticable chagne for users is the ability to select site or diangostic grouping in the random-effects funnel plot.
+
+---
+class: center middle
+
+# SHMI Questions
+
+---
+
+# CUSUM
+
++ SMRs are usually compared in a 'cross-sectional' manner: a snapshot at point in time/.
++ Question is are we higher or lower than expected?
+
+### What if I want to compare over time?
+
++ We can't use monthly relatie risk figures, as it's the wrong comparison.
+
++ We can use control charts to monitor change over time.
+
++ Risk-adjustment in SMRs makes them more complicated
+ + i.e. ___don't use and XmR (#plothedots) chart!___
+
++ Risk-adjusted __CU__mulative _SUM_ log-likelihood ratio test charts can be used
+
++ Sequential probaility test, usually to checking if rate is twice the england rate.
+
+
