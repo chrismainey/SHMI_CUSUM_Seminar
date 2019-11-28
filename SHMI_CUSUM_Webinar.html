@@ -143,10 +143,10 @@ __HED using look-up tables supplied by NHSD, and applying remapping to SITETRET.
 
 ---
 
-# Module changes
+## Module changes
 
 .pull-left[
-![](./man/figures/SHMI_button.png)
+&lt;center&gt;&lt;img src="./man/figures/SHMI_button.png" width=42% height=42% border=1&gt;&lt;/center&gt;
 ]
 
 .pull-right[
@@ -185,17 +185,17 @@ Overdispersion (more variation than we expect in our data from theory alone) is 
 --
 
 &lt;br&gt;
-+ Reporting at site and diagnostics group level is not yet sound due to combination of censoring and overdispersion adjustments.
++ Reporting at site and diagnosis group level is not yet sound due to combination of censoring and overdispersion adjustments.
 
 --
 
 &lt;br&gt;
-+ HED is reporting data as provided by NHS Digital, using their methods and site-lookup tables. We regularly are in regular contact with NHSD about SHMI developments and will keep up with any changes.
++ HED is reporting data as provided by NHS Digital, using their methods and site-lookup tables. We are in regular contact with NHSD about SHMI developments and will keep up with any changes.
 
 --
 
 &lt;br&gt;
-+ The only noticeable change for users is the ability to select site or diagnostic grouping in the random-effects funnel plot.
++ The only noticeable change for users is the ability to select site or diagnosis grouping in the random-effects funnel plot.
 
 --
 
@@ -223,7 +223,7 @@ class: center middle
 + We can use control charts to monitor change over time.
 
 + Risk-adjustment in SMRs makes them more complicated
- + i.e. ___don't use an XmR (#plothedots) chart!___
+ + i.e. ___don't use an XmR (#plotthedots) chart!___
 
 --
 
@@ -264,7 +264,7 @@ __Two common methods:__
 + Accumulates with deaths
 + Threshold of 0.5 of sd before accumulating
 + Trigger value based on normal theory approximation (Grigg and Spiegelhalter, 2008)
-+ Trigger = 5.48, (0.01% - False Discovery Rate)
++ Trigger = 5.48, (0.1% - False Discovery Rate)
 + Reset to zero
 
 &lt;br&gt;&lt;br&gt;
@@ -276,7 +276,7 @@ __Based on CQC / Cambridge papers on comparing Healthcare Indicators__
 
 .pull-right[
 
-![](./man/figures/Aggreagate_cusum.gif)
+&lt;img src="./man/figures/Aggreagate_cusum.gif"&gt;
 
 ]
 
@@ -290,7 +290,7 @@ __Based on CQC / Cambridge papers on comparing Healthcare Indicators__
 + Starts at zero
 + Accumulates with deaths
 + Trigger value based published approximation (Bottle and Aylin, 2011)
-+ Trigger unique to each trust and diagnostic group
++ Trigger unique to each trust and diagnosis group
 + Reset to half, partly (Lucas and Crosier, 1982)
 
 &lt;br&gt;&lt;br&gt;
@@ -301,7 +301,7 @@ __Based on (Steiner Cook, et al., 2000; Bottle and Aylin, 2008)__
 
 .pull-right[
 
-![](./man/figures/Person_cusum.gif)
+&lt;ceter&gt;&lt;img src="./man/figures/Person_cusum.gif" height=100% width=100%&gt;&lt;/center&gt;
 
 ]
 
@@ -319,7 +319,7 @@ __Based on (Steiner Cook, et al., 2000; Bottle and Aylin, 2008)__
 ### New single module:
 + Summarises current alerts and prior 12-months
 + Both aggregated and person-level methods
-+ Aggreagate trigger remains 5.48 (0.01%FDR)
++ Aggreagate trigger remains 5.48 (0.1%FDR)
 + Applied Aylin &amp; Bottle CUSUM limit approximation to persons
 
 ---
@@ -337,7 +337,7 @@ __Based on (Steiner Cook, et al., 2000; Bottle and Aylin, 2008)__
 --
 
 &lt;br&gt;
-+ Applied to HSMR, VLAD will be added for SHMI over Christmas period
++ Applied to HSMR, VLAD will be added for SHMI over the Christmas period
 
 --
 
