@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+  <head>
+    <title>Changes to HED SHMI and CUSUM</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Chris Mainey chris.mainey@uhb.nhs.uk" />
+    <link rel="stylesheet" href="libs\HED.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+class: center
+
+
+
+
+
+
+
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+
+## Changes to HED SHMI and CUSUM modules
+
+&lt;br&gt;&lt;br&gt;
+
+
+__Chris Mainey__
+&lt;p style="font-size:16pt;"&gt;Intelligence Analyst&lt;br&gt;
+&lt;b&gt;University Hospitals Birmingham 
+NHS Foundation Trust&lt;/b&gt;&lt;/p&gt;
+&lt;br&gt;
+&lt;span style="font-size:16pt;"&gt;[HED@uhb.nhs.uk](mailto:HED@uhb.nhs.uk)&lt;/span&gt;&lt;br&gt;
+
+---
+
+# Overview
+
++ Standardised Mortality Ratios
++ SHMI
+ + NHS Digital's changes
+ + HED module changes
+ + Outstanding methodological issues
++ SHMI Q&amp;A
+
+--
+
++ CUSUM overview
+ + Different CUSUM methods
+ + New HED CUSUM module
++ CUSUM Q&amp;A
+
+&lt;br&gt;&lt;br&gt;
+
+___Please type any questions into the chat box, and we will address them at Q&amp;A___
+
+---
+
+## Standardised Mortality Ratios (SMRs)
+
++ Difference in case-mix between hospitals hinder mortality comparisons
+ 
+ + Patient population / demographics
+ + Referral patterns / service provision
+
+--
+
+&lt;br&gt;&lt;br&gt;
+
++ Indirectly-standardised: using regression models
+ + Individual Probability of death calculated per patient:
+`$$SMR = \frac{\Sigma{(\text{Number of Observed deaths})}}{\Sigma{(\text{Predicted Probability of death})}}$$`
+
+--
+
+### Common SMRs:
+
++ __SHMI:__ Summary Hospital-level Mortality Indicator, NHS indicator for death in hospitals or within 30-days
++ __HSMR__: Hospital Standardised Mortality Ratio, Dr Foster-based indicator of ~80% in-hospital deaths
+
+---
+
+# SHMI development
+
+___Number of criticisms remain:___
++ Model quality was poor in certain groups (and in general)
++ No deprivation, ethnicity, or palliative information
++ Apparent South-East bias
++ Distinct seasonal patterns
++ Out-of-date
++ Inconsistent across large / integrated providers
+
+--
+
+___NHS Digital Changes:___
++ Regrouped: Hodgkin/non-Hodgkin lymphoma, birth and obs/maternity.
++ Added Birth-weight predictor to neonatal groups
++ Seasonality now included as admission month
++ Publication now monthly(mostly...)
++ Site-level now published*
+
+---
+
+# Site-level SHMI
+
+Many of you may have filled in an NHS Digital survey about site in recent weeks.
+Site is inconsistently recorded, coded and submitted to HES.
+
+&lt;br&gt;&lt;br&gt;
+
+__NHSD techniques developed:__
++ Using CQC registered sites/providers
++ Merging with ODS data and HES
++ Using their own remapping
++ Manual correction likely in subsequent publications
+
+--
+
+&lt;br&gt;&lt;br&gt;
+__HED using look-up tables supplied by NHSD, and applying remapping to SITETRET.__
+
+
+---
+
+# HED module changes
+
++ Renaming modules in due course
+
+--
+
++ All model parameters now provided:
+ 
+ + NHSD added more predictors, but not in co-ordination with DARS team
+ + NHSD did not provide other predictors to subscribers
+ + Fit SHMI from NHSD coefficients, calculate in/out hospital and palliative models
+
+--
+
++ 'Monthly' SHMI
+
+ + Subject to Type-2 opt-outs, but has patient details
+ + Fitted using correct model from NHS, but numbers may differ
+ + HES sites not mapped like SHMI, manual remapping
+
+---
+
+## Module changes
+
+.pull-left[
+&lt;center&gt;&lt;img src="./man/figures/SHMI_button.png" width=42% height=42% border=1&gt;&lt;/center&gt;
+]
+
+.pull-right[
+&lt;br&gt;
++ In portal, little has changed for user, mostly in underlying system
+&lt;br&gt;&lt;br&gt;
++ Additional drop-down menu on Funnel Plot (Random Effects Model)
+&lt;br&gt;&lt;br&gt;
++ Adjusts aggregation level and recalculates 
+&lt;br&gt;&lt;br&gt;
++ Censoring and Overdispersion issues in NHSD method
+
+]
+
+---
+# Outstanding Issues
+
+### Site-level mapping
+
++ This is inconsistent and inaccessible for other organisations.  
++ In our view, it is not fit for analysis, but we have provided to match NHSD.
+
+### Overdispersion 
+
+Overdispersion (more variation than we expect in our data from theory alone) is present in SHMI.  It is adjusted for in the random-effects funnel plot by inflating the limits by the overdispersion factor.
++ OD is usually worse in smaller unit
++ Site and diagnosis groupings increase OD due to smaller units
++ NHSD censors ___before___ calculating OD, underestimating it
++ HED adjusts for OD, then applies censoring ___after___ adjustment
+---
+
+# Summary
+
++ SHMI has moved to monthly publication, with improved division of diagnosis groups, and additions of birth-weight and seasonality predictors.  This has improved the quality of SHMI.
+
+--
+
+&lt;br&gt;
++ Reporting at site and diagnosis group level is not yet sound due to combination of censoring and overdispersion adjustments.
+
+--
+
+&lt;br&gt;
++ HED is reporting data as provided by NHS Digital, using their methods and site-lookup tables. We are in regular contact with NHSD about SHMI developments and will keep up with any changes.
+
+--
+
+&lt;br&gt;
++ The only noticeable change for users is the ability to select site or diagnosis grouping in the random-effects funnel plot.
+
+--
+
+&lt;br&gt;
++ SHMI seasonal pattern will change, but annual figures the same.
+
+---
+class: center middle
+
+# SHMI Questions
+
+---
+
+# CUSUM
+
++ SMRs are usually compared in a 'cross-sectional' manner: a snapshot at point in time.
++ Question is are we higher or lower than expected?
+
+--
+
+### What if I want to compare over time?
+
++ We can't use monthly relative risk figures, as it's the wrong comparison.
+
++ We can use control charts to monitor change over time.
+
++ Risk-adjustment in SMRs makes them more complicated
+ + i.e. ___don't use an XmR (#plotthedots) chart!___
+
+--
+
++ Risk-adjusted __CU__mulative __SUM__ log-likelihood ratio test charts can be used
+
++ Sequential probability test, usually to checking if rate is twice england rate.
+
++ General monitoring method by CQC, and by Dr Foster Unit @ Imperial
+
+---
+# Methods
+
+Essentially:
+
+`$$C_t = max(C_{t-1} + w_t, 0)$$`
++ `\(C\)` CUSUM value at time-point `\(t\)` (e.g. a monthly at a trust)
++ `\(w\)` is a weighting, in this case the log-likelihood ratio (observation v.s. england)
+
+
+&lt;br&gt;&lt;br&gt;
+
+--
+__Two common methods:__
+
+- __Aggregated:__  transforms to 'standard score', overdisperison adjustment like SHMI.  CQC method, per month.
+((CQC), 2014; Spiegelhalter, SherlawJohnson, Bardsley, Blunt, Wood, and Grigg, 2012)
+
+
+- __Patient-level:__ Individual patient risk/outcome scored against expected. (Steiner, Cook, Farewell, and Treasure, 2000; Bottle and Aylin, 2011; Steiner, Cook, and Farewell, 2001)
+
+---
+
+# Aggregated Cusum
+
+.pull-left[
+
++ Starts at zero
++ Accumulates with deaths
++ Threshold of 0.5 of sd before accumulating
++ Trigger value based on normal distribution approximation (Grigg and Spiegelhalter, 2008)
++ Trigger = 5.48, (0.1% - False Discovery Rate)
++ Reset to zero
+
+&lt;br&gt;&lt;br&gt;
+
+__Based on CQC / Cambridge papers on comparing Healthcare Indicators__
+
+
+]
+
+.pull-right[
+&lt;img src="SHMI_CUSUM_Webinar_for_print_files/figure-html/ag_csm-1.png" width="468" style="display: block; margin: auto;" /&gt;
+
+
+]
+
+---
+
+# Person-level Cusum
+
+.pull-left[
+
+
++ Starts at zero
++ Accumulates with deaths
++ Trigger value based published approximation (Bottle and Aylin, 2011)
++ Trigger unique to each trust and diagnosis group
++ Reset to half, partly (Lucas and Crosier, 1982)
+
+&lt;br&gt;&lt;br&gt;
+
+__Based on (Steiner Cook, et al., 2000; Bottle and Aylin, 2008)__
+
+]
+
+.pull-right[
+&lt;img src="SHMI_CUSUM_Webinar_for_print_files/figure-html/prsn_csm-1.png" width="468" style="display: block; margin: auto;" /&gt;
+
+
+]
+
+---
+
+# Replacing the HED CUSUM modules:
+
+### Current modules:
++ Clinical Quality &gt; Mortality &gt; CUSUM - Mortality Analytics
++ Pre-release: Person-level &gt; Mortality Overview and Cusum Alerts
+
+--
+
+&lt;br&gt;&lt;br&gt;
+### New single module:
++ Summarises current alerts and prior 12-months
++ Both aggregated and person-level methods
++ Aggreagate trigger remains 5.48 (0.1%FDR)
++ Applied Aylin &amp; Bottle CUSUM limit approximation to persons
+
+---
+
+### Layout
+
+&lt;img src="./man/figures/CUSUM.png" width=100% height=100%&gt;
+
+---
+
+# Summary
+
++ CUSUMs monitor mortality over time
+
+--
+
+&lt;br&gt;
++ Applied to HSMR, VLAD will be added for SHMI over the Christmas period
+
+--
+
+&lt;br&gt;
++ Replacing two current modules with single new one:
+
+ + Aggregated method (CQC-style)
+
+ + Person-level (Imperial/DFI-style)
+
+--
+
+&lt;br&gt;
++ Simpler interface showing table of alerts first
+
+---
+class: center middle
+
+# CUSUM Questions
+
+
+---
+# References
+
+&lt;p style="font-size:12pt;"&gt;Care Quality Commission (2014)(CQC). &lt;i&gt;NHS acute hospitals: Statistical Methodology.&lt;/i&gt;&lt;/p&gt;
+&lt;p style="font-size:12pt;"&gt;Bottle, A and P Aylin (2011). “Predicting the false alarm rate in multi-institution mortality monitoring”. In: &lt;i&gt;The Journal of the Operational Research Society&lt;/i&gt; 62.9, pp. 1711-1718. ISSN: 01605682, 14769360.&lt;/p&gt;
+&lt;p style="font-size:12pt;"&gt;Bottle, Alex and Paul Aylin (2008). “Intelligent Information: A National System for Monitoring Clinical Performance”. In: &lt;i&gt;Health Services Research&lt;/i&gt; 43.1 Pt 1, pp. 10-31. ISSN: 0017-9124 1475-6773.&lt;/p&gt;
+&lt;p style="font-size:12pt;"&gt;Grigg, O. A. and D. J. Spiegelhalter (2008). “An Empirical Approximation to the Null Unbounded Steady-State Distribution of the Cumulative Sum Statistic”. In: &lt;i&gt;Technometrics&lt;/i&gt; 50.4, pp. 501-511. ISSN: 0040-1706.&lt;/p&gt;
+&lt;p style="font-size:12pt;"&gt;Lucas, James M. and Ronald B. Crosier (1982). “Fast Initial Response for CUSUM Quality-Control Schemes:Give Your CUSUM A Head Start”. In: &lt;i&gt;Technometrics&lt;/i&gt;24.3, pp. 199-205. ISSN: 00401706. &lt;/p&gt;
+&lt;p style="font-size:12pt;"&gt;Moustakides, George V. (1986). “Optimal Stopping Times for Detecting Changes in Distributions”. In: &lt;i&gt;TheAnnals of Statistics&lt;/i&gt; 14.4, pp. 1379-1387. ISSN: 00905364. &lt;/p&gt;
+&lt;p style="font-size:12pt;"&gt;Spiegelhalter, D J (2005). “Handling over-dispersion of performance indicators”. In: &lt;i&gt;Quality and Safety in Health Care&lt;/i&gt; 14.5, pp. 347-351.&lt;/p&gt;
+&lt;p style="font-size:12pt;"&gt;Spiegelhalter, David, Christopher Sherlaw-Johnson, Martin Bardsley, et al. (2012). “Statistical methods for healthcare regulation: rating, screening and surveillance”. In: &lt;i&gt;Journal of the Royal Statistical Society: Series A (Statistics in Society)&lt;/i&gt; 175.1, pp. 1-47. ISSN: 1467-985X.&lt;/p&gt;
+&lt;p style="font-size:12pt;"&gt;Steiner, Stefan H, Richard J. Cook, and Vern T. Farewell (2001). “Risk-Adjusted Monitoring of Binary
+Surgical Outcomes”. In: &lt;i&gt;Medical Decision Making&lt;/i&gt; 21.3, pp. 163-169. ISSN: 0272-989X.&lt;/p&gt;
+&lt;p style="font-size:12pt;"&gt;Steiner, Stefan H, Richard J. Cook, Vern T. Farewell, et al. (2000). “Monitoring surgical performance using risk-adjusted cumulative sum charts”. In: &lt;i&gt;Biostatistics_ 1.4&lt;/i&gt;. tex.eprint: http://oup.prod.sis.lan/biostatistics/article-pdf/1/4/441/654864/010441.pdf, pp. 441-452. ISSN: 1465-4644.&lt;/p&gt;
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="libs/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
