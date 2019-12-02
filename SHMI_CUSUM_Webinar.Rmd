@@ -272,7 +272,7 @@ $$C_t = max(C_{t-1} + w_t, 0)$$
 --
 __Two common methods:__
 
-- __Aggregated:__  transforms to 'standard score', overdisperison adjustment like SHMI.  CQC method, per month.
+- __Aggregated:__  transforms to 'standard score', overdispersion adjustment like SHMI.  CQC method, per month.
 `r Cite(myBib, c("carequalitycommissioncqcNHSAcuteHospitals2014", "spiegelhalterStatisticalMethodsHealthcare2012b"), max.names=2)`
 
 
